@@ -1,5 +1,10 @@
 from bs4 import BeautifulSoup
-import requests
+import requests,openpyxl
+
+excel = openpyxl.Workbook() 
+sheet = excel.active
+sheet.title = "IMDB Top Rated Movies"
+sheet.append(["Rank","Title","Year","IMDB Rating"])
 
 try:
     source = requests.get('https://www.imdb.com/chart/top/')
@@ -13,7 +18,10 @@ try:
         title = movie.find('td',class_="titleColumn").a.text
         year = movie.find('td',class_="titleColumn").span.text.strip('()')
         rating = movie.find('td',class_="imdbRating").strong.text
-        
+
+        sheet.append([rank,title,year,rating])
 
 except Exception as e:
     print(e)
+
+excel.save("IMDB Top Rated 250 Movies.xlsx")
